@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
-class StaticController < ApplicationController # rubocop:todo Style/Documentation
+class StaticController < ApplicationController
   def index; end
 end
