@@ -1,59 +1,24 @@
-import React from "react"
-import { Connect } from "react-redux"
-import { createStructuredSelector } from "reselect"
+import React, { useEffect } from "react"
+import PropTypes from "prop-types"
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchGreeting } from '../redux/greetings/reducers/greetingsReducer'
 
-const GET_GREETINGS_REQUEST = "GET_GREETINGS_REQUEST"
-const GET_GREETINGS_SUCCESS = "GET_GREETINGS_SUCCESS"
+const Greeting = () => {
+  const message = useSelector(({greetingReducer}) => greetingReducer.messages);
+  const dispatch = useDispatch();
 
-function getGreetings() {
-  return dispatch => {
-    dispatch({ type: GET_GREETINGS_REQUEST });
-    return fetch('v1/greetings.json')
-      .then(response =>  response.json())
-      .then((json) =>  {
-        const data = {
-          name: json.name,
-          id: json.id
-        }
-        dispatch(getGreetingsSuccess(data))
-      })
-      .catch(error => console.log(error));
-  };
-};
+  useEffect(() => {
+    dispatch(fetchGreeting())
+  }, [])
 
-export function getGreetingsSuccess(json) {
-  return {
-    type: GET_GREETINGS_SUCCESS,
-    json
-  };
-};
-
-class Greeting extends React.Component {
-  render() {
-    const { greetings } = this.props;
-    const arr = []
-    arr.push(greetings)
-    const greetingList = arr.map((greeting) => {
-      return <li key={greeting.id}>{greeting.name}</li>
-    })
-
-    return (
-      <React.Fragment>
-        <h2>How to say Hello World in different languages {this.props.greeting} </h2>
-        <p>Click the button below to get a random greeting</p>
-        <br/>
-        <button className="btn" onClick={() => this.props.getGreetings()}>Get Greetings</button>
-        <br />
-        <ul>{greetingList}</ul>
-      </React.Fragment>
-    );
-  }
+  return (
+    <div>
+      <h1>{message}</h1>
+    </div>
+  );
 }
 
-const structuredSelector = createStructuredSelector({
-  greetings: state => state.greetings,
-})
-
-const mapDispatchToProps = { getGreetings };
-
-export default Connect(structuredSelector, mapDispatchToProps)(Greeting);
+Greeting.propTypes = {
+  message: PropTypes.string
+};
+export default Greeting;

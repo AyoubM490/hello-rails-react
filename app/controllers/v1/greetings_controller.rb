@@ -1,8 +1,5 @@
-module V1
-  class GreetingsController < ApplicationController
-    def index
-      @random = Greeting.find(Greeting.pluck(:id).sample)
-      render json: @random, status: :ok
-    end
+class V1::GreetingsController < ApplicationController
+  def index
+    render json: { message: Greeting.random_value.message }
   end
 end
